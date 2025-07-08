@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import csv
+from save_to_csv import save_to_csv
 from datetime import datetime
 
 def scrape_craigslist(url="https://tricities.craigslist.org/search/apa"):
@@ -24,18 +24,7 @@ def scrape_craigslist(url="https://tricities.craigslist.org/search/apa"):
             print("Skipping listing due to error:", e)
     return rows
 
-def save_to_csv(rows, filename='rentals.csv'):
-    try:
-        with open(filename, 'x', newline='', encoding='utf-8') as f:
-            writer = csv.writer(f)
-            writer.writerow(['Title', 'Price', 'Location', 'Link'])
-            writer.writerows(rows)
-    except FileExistsError:
-        with open(filename, 'a', newline='', encoding='utf-8') as f:
-            writer = csv.writer(f)
-            writer.writerows(rows)
-
 if __name__ == '__main__':
     listings = scrape_craigslist()
-    save_to_csv(listings)
+    save_to_csv(listings, ['Title', 'Price', 'Location', 'Link'])
     print(f"✅ Scraped and saved {len(listings)} listings at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
